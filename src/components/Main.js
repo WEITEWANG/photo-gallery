@@ -53,7 +53,7 @@ class AppComponent extends React.Component {
       }
     }
     this.state={
-      imgsArrageArr:{
+      imgsArrangeArr:{
         pos:{
           left:0,
           top:0
@@ -66,9 +66,21 @@ class AppComponent extends React.Component {
   *@param index,需要被居中的图片对应的图片信息数组的index值
   *@return {function}
   */
-//  rerrange(centerIndex){
-
-//  }
+ rerrange(centerIndex){
+  let imgsArrangeArr=this.state.imgsArrangeArr,
+      Constant=this.Constant,
+      hPosRange=Constant.hPosRange,
+      leftSecX=hPosRange.leftSecX,
+      rightSecX=hPosRange.rightSecX,
+      hPosRangeTopY=hPosRange.topY,
+      vPosRange=Constant.vPosRange,
+      vPosRangeX=vPosRange.x,
+      vPosRangeTopY=vPosRange.topY,
+      // 定义中心位置图片
+      imgArrangeCenterArr=imgsArrangeArr.splice(centerIndex,1);
+      // 上侧区域图片的张数在1张内
+      imgTopNum=math.floor(math.random()*2)
+ }
   render() {
     let imgFigures=[],controllerUnits=[];
     imgsData.forEach((value,index)=>{
