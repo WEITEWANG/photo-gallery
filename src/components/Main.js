@@ -55,15 +55,14 @@ class AppComponent extends React.Component {
       }
     }
     this.state={
-      imgsArrangeArr:{
+      imgsArrangeArr:[{
         pos:{
           left:0,
           top:0
         }
-      }
+      }]
     }
   }
-  // 
   center(index){
     return ()=>{
       this.rerrange(index);
@@ -142,19 +141,30 @@ class AppComponent extends React.Component {
     stageHeight=stageDOM.scrollHeight,
     halfStageWidth=stageWidth/2,
     halfStageHeight=stageHeight/2;
-    console.log(stageWidth,stageHeight);
     // 获取每张图片的宽高
     let imgFigDOM=ReactDOM.findDOMNode(this.refs.imgFigure0),
-    imgFigDOMWidth=imgFigDOM.scrollWidth,
-    imgFigDOMHeight=imgFigDOM.scrollHeight,
-    halfImgFigDOMWidth=imgFigDOMWidth/2,
-    halfImgFigDOMHeight=imgFigDOMHeight/2;
+    imgFigWidth=imgFigDOM.scrollWidth,
+    imgFigHeight=imgFigDOM.scrollHeight,
+    halfImgFigWidth=imgFigWidth/2,
+    halfImgFigHeight=imgFigHeight/2;
     // 中心图片位置
     this.Constant.centerPos={
-      left:halfStageWidth-halfImgFigDOMWidth,
-      top:halfStageHeight-halfImgFigDOMHeight
+      left:halfStageWidth-halfImgFigWidth,
+      top:halfStageHeight-halfImgFigHeight
     }
-    // this.rerrange(0);
+    // 水平方向图片的位置
+    this.Constant.hPosRange.leftSecX[0]=-halfImgFigWidth;
+    this.Constant.hPosRange.leftSecX[1]=halfStageWidth-halfImgFigWidth*3;
+    this.Constant.hPosRange.rightSecX[0]=halfStageWidth+halfImgFigWidth;
+    this.Constant.hPosRange.rightSecX[1]=stageWidth-halfImgFigWidth;
+    this.Constant.hPosRange.topY[0]=-halfImgFigHeight;
+    this.Constant.hPosRange.topY[1]=stageHeight-halfImgFigHeight;
+    // 垂直方向图片位置的取值范围
+    this.Constant.vPosRange.x[0]=halfStageWidth-imgFigWidth;
+    this.Constant.vPosRange.x[1]=halfStageWidth;
+    this.Constant.vPosRange.topY[0]=-halfImgFigHeight;
+    this.Constant.vPosRange.topY[1]=halfStageHeight-halfImgFigHeight;
+    this.rerrange(0);
   }
   render() {
     let imgFigures=[],controllerUnits=[];
