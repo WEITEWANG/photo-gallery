@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 // 解析json文件中图片
 let imgsData=require('../data/imageDatas.json');
 imgsData=(function getImgsUrl(imgsDataArr){
-  imgsData.forEach((val,index) => {
+  imgsData.forEach(val => {
     let imgSingleData=val;
     imgSingleData.imgUrl=require('../images/'+val.fileName);
     val=imgSingleData;
@@ -16,6 +16,10 @@ imgsData=(function getImgsUrl(imgsDataArr){
 })(imgsData);
 // 获取区间内的一个随机值
 var getRangeRandom=(low,high)=>Math.floor(Math.random()*(high-low)+low);
+// 倾斜角度30deg左右
+var get30DegRandom=()=>{
+  return((Math.random()>0.5?'':'-')+Math.floor(Math.random()*30));
+};
 // 定义图片组件
 class ImageFigure extends React.Component{
   constructor(props){
@@ -23,8 +27,17 @@ class ImageFigure extends React.Component{
     
   }
   render(){
+    let styleObj={};
+    if(this.props.arrange.pos){
+      styleObj=this.props.arrange.pos;
+    }
+    if(this.props.arrange.rotate){
+      (['MozTransform','MsTransform','WebkitTransform','transform']).forEach(val=>{
+        styleObj[val]='rotate('+this.props.arrange.rotate+'deg)';
+      });
+    }
     return (
-      <figure className="img-figure">
+      <figure className="img-figure" style={styleObj}>
         <img src={this.props.data.imgUrl} alt={this.props.data.desc} />
         <figcaption>
           <h2 className="img-title">{this.props.data.title}</h2>
@@ -55,12 +68,15 @@ class AppComponent extends React.Component {
       }
     }
     this.state={
-      imgsArrangeArr:[{
-        pos:{
-          left:0,
-          top:0
-        }
-      }]
+      imgsArrangeArr:[
+      //   {
+      //   pos:{
+      //     left:0,
+      //     top:0
+      //   },
+      // rotate:0
+      // }
+    ]
     }
   }
   center(index){
@@ -106,7 +122,8 @@ class AppComponent extends React.Component {
             pos:{
              top: getRangeRandom(vPosRangeTopY[0],vPosRangeTopY[1]),
              left:getRangeRandom(vPosRangeX[0],vPosRangeX[1])
-            }
+            },
+            rotate:get30DegRandom()
           }
       });
       // 布局两侧图片位置
@@ -118,8 +135,11 @@ class AppComponent extends React.Component {
           hPosRangeLORX=rightSecX;
         }
         imgsArrangeArr[i]={
-          left:getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1]),
-          top:getRangeRandom(hPosRangeTopY[0],hPosRangeTopY[1])
+          pos:{
+            left:getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1]),
+            top:getRangeRandom(hPosRangeTopY[0],hPosRangeTopY[1])
+          },
+          rotate:get30DegRandom()
         }
       }
       // 填充上侧区域
@@ -128,9 +148,9 @@ class AppComponent extends React.Component {
       }
       // 填充中心位置区域
       imgsArrangeArr.splice(centerIndex,0,imgArrangeCenterArr[0]);
-      this.setState={
+      this.setState({
         imgsArrangeArr:imgsArrangeArr
-      }
+      });
     }
   // 组件渲染出来，获取stage的高度
   componentDidMount(){
@@ -167,11 +187,23 @@ class AppComponent extends React.Component {
     this.rerrange(0);
   }
   render() {
+    console.log(this);
     let imgFigures=[],controllerUnits=[];
+    imgsData.forEach((val,index)=>{
+      if(!this.state.imgsArrangeArr[index]){
+        this.state.imgsArrangeArr[index]={
+          pos:{
+            left:0,
+            top:0
+          },
+          rotate:0
+        }
+      }
+    })
+  
     imgsData.forEach((value,index)=>{
       imgFigures.push(<ImageFigure key={index} data={value} ref={'imgFigure'+index} arrange={this.state.imgsArrangeArr[index]} center={this.center(index)}/>);
     });
-    
     return (
       <section className="stage" ref="stage">
         <section className="img-sec">{imgFigures}</section>
